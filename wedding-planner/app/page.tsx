@@ -21,7 +21,7 @@ type View = { name: 'home' } | { name: 'album'; albumId: string }
 
 export default function Page() {
   const [state, setState] = useState<State | null>(null)
-  const [role, setRole] = useState<RoleId>('spouseA')
+  const role: RoleId = 'spouseA' // single fixed viewer
   const [view, setView] = useState<View>({ name: 'home' })
   const [suggestFor, setSuggestFor] = useState<string | null>(null)
   const [showNotifs, setShowNotifs] = useState(false)
@@ -111,7 +111,12 @@ export default function Page() {
               </button>
             </>
           )}
-          <RoleSwitcher role={role} setRole={setRole} />
+          <div className="roles">
+            <span className="roles-label">Viewing as</span>
+            <span className="role-chip active">
+              <span>{current.emoji}</span> {current.label}
+            </span>
+          </div>
         </div>
       </header>
 
@@ -159,23 +164,6 @@ export default function Page() {
       >
         ↺ reset
       </button>
-    </div>
-  )
-}
-
-function RoleSwitcher({ role, setRole }: { role: RoleId; setRole: (r: RoleId) => void }) {
-  return (
-    <div className="roles">
-      <span className="roles-label">Viewing as</span>
-      {Object.values(ROLES).map((r) => (
-        <button
-          key={r.id}
-          className={'role-chip' + (role === r.id ? ' active' : '')}
-          onClick={() => setRole(r.id)}
-        >
-          <span>{r.emoji}</span> {r.label}
-        </button>
-      ))}
     </div>
   )
 }
