@@ -1,1 +1,1 @@
-# cursor-hackathon-
+# Wedding Planner
