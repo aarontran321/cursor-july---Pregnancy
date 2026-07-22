@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './marrymap.css'
 import {
   load,
@@ -9,7 +9,6 @@ import {
   ROLES,
   isMatch,
   uid,
-  GUEST_NAMES,
   type State,
   type RoleId,
   type Option,
@@ -25,6 +24,8 @@ export default function Page() {
   const [view, setView] = useState<View>({ name: 'home' })
   const [suggestFor, setSuggestFor] = useState<string | null>(null)
   const [showNotifs, setShowNotifs] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   // load on mount only (avoids SSR localStorage + hydration mismatch)
   useEffect(() => setState(load()), [])
@@ -77,20 +78,17 @@ export default function Page() {
     )
   }
 
-  // simulate a guest accepting the invite / joining the board
-  const simulateJoin = () => {
-    const name = GUEST_NAMES[Math.floor(Math.random() * GUEST_NAMES.length)]
-    setState((s) =>
-      s
-        ? {
-            ...s,
-            notifications: [
-              { id: uid(), text: `${name} joined the board`, emoji: '🎉', read: false, createdAt: Date.now() },
-              ...(s.notifications || []),
-            ],
-          }
-        : s
-    )
+  // copy a shareable (placeholder) invite link and confirm with a small toast
+  const invite = async () => {
+    const url = `${window.location.origin}/join?board=alex-and-sam`
+    try {
+      await navigator.clipboard.writeText(url)
+    } catch {
+      // clipboard may be unavailable; the toast still confirms intent
+    }
+    setToast(url)
+    clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setToast(null), 3000)
   }
 
   return (
@@ -102,7 +100,7 @@ export default function Page() {
         <div className="topbar-right">
           {isSpouse && (
             <>
-              <button className="invite-btn" onClick={simulateJoin}>
+              <button className="invite-btn" onClick={invite}>
                 + Invite guest
               </button>
               <button className="admin-btn bell" onClick={openNotifs} title="Notifications">
@@ -151,6 +149,13 @@ export default function Page() {
 
       {showNotifs && (
         <NotificationsPanel notifications={notifications} onClose={() => setShowNotifs(false)} />
+      )}
+
+      {toast && (
+        <div className="mm-toast" role="status">
+          <span className="mm-toast-title">🔗 Invite link copied</span>
+          <span className="mm-toast-url">{toast}</span>
+        </div>
       )}
 
       <button
