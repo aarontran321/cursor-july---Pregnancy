@@ -537,3 +537,15 @@
 @media (max-width: 720px) { .mm .crm-stats { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 620px) { .mm .crm-grid { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .mm .grid { grid-template-columns: 1fr; } }
+
+.nav-tab,
+.invite-btn,
+.contact-btn,
+.reset,
+.mm-toast-title,
+.role-chip,
+.seg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

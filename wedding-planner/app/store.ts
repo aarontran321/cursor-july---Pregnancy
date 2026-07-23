@@ -1,13 +1,24 @@
 // localStorage-backed store, ported from the Vite prototype.
 // Shaped so a real backend can drop in later.
 
+
 export type RoleId = 'spouseA' | 'spouseB' | 'guest'
+
+export type IconName =
+  | 'heart'
+  | 'gift'
+  | 'utensils'
+  | 'music'
+  | 'camera'
+  | 'building'
+  | 'flower'
+  | 'cake'
 
 export interface Role {
   id: RoleId
   label: string
   kind: 'spouse' | 'guest'
-  emoji: string
+  icon: IconName
 }
 
 export interface EmailMsg {
@@ -38,13 +49,13 @@ export interface Option {
 export interface Album {
   id: string
   name: string
-  emoji: string
+  icon: IconName
 }
 
 export interface Notif {
   id: string
   text: string
-  emoji: string
+  icon: IconName
   read: boolean
   createdAt: number
 }
@@ -58,9 +69,24 @@ export interface State {
 const KEY = 'marrymap:v2'
 
 export const ROLES: Record<RoleId, Role> = {
-  spouseA: { id: 'spouseA', label: 'Alex', kind: 'spouse', emoji: '💛' },
-  spouseB: { id: 'spouseB', label: 'Sam', kind: 'spouse', emoji: '💙' },
-  guest: { id: 'guest', label: 'Guest', kind: 'guest', emoji: '🎁' },
+  spouseA: {
+    id: 'spouseA',
+    label: 'Alex',
+    kind: 'spouse',
+    icon: 'heart',
+  },
+  spouseB: {
+    id: 'spouseB',
+    label: 'Sam',
+    kind: 'spouse',
+    icon: 'heart',
+  },
+  guest: {
+    id: 'guest',
+    label: 'Guest',
+    kind: 'guest',
+    icon: 'gift',
+  },
 }
 
 export const uid = () => Math.random().toString(36).slice(2, 9)
@@ -70,12 +96,12 @@ const grad = (a: string, b: string) => `linear-gradient(135deg, ${a}, ${b})`
 
 function seed(): State {
   const albums: Album[] = [
-    { id: 'catering', name: 'Catering', emoji: '🍽️' },
-    { id: 'dj', name: 'DJ / Music', emoji: '🎧' },
-    { id: 'photographer', name: 'Photographer', emoji: '📸' },
-    { id: 'venue', name: 'Venue', emoji: '🏛️' },
-    { id: 'florist', name: 'Florist', emoji: '💐' },
-    { id: 'cake', name: 'Cake', emoji: '🎂' },
+    { id: 'catering', name: 'Catering', icon: 'utensils' },
+    { id: 'dj', name: 'DJ / Music', icon: 'music' },
+    { id: 'photographer', name: 'Photographer', icon: 'camera' },
+    { id: 'venue', name: 'Venue', icon: 'building' },
+    { id: 'florist', name: 'Florist', icon: 'flower' },
+    { id: 'cake', name: 'Cake', icon: 'cake' },
   ]
 
   const mk = (
@@ -180,8 +206,20 @@ function seed(): State {
   )
 
   const notifications: Notif[] = [
-    { id: uid(), text: 'Aunt Rosa joined the board', emoji: '🎉', read: false, createdAt: Date.now() - 6e4 },
-    { id: uid(), text: 'Jordan (best man) joined the board', emoji: '🎉', read: false, createdAt: Date.now() - 12e5 },
+    {
+      id: uid(),
+      text: 'Aunt Rosa joined the board',
+      icon: 'gift',
+      read: false,
+      createdAt: Date.now() - 6e4,
+    },
+    {
+      id: uid(),
+      text: 'Jordan (best man) joined the board',
+      icon: 'gift',
+      read: false,
+      createdAt: Date.now() - 12e5,
+    },
   ]
 
   return { albums, options, notifications }

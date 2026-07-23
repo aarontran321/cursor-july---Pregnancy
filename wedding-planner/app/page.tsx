@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import './marrymap.css'
 import CrmView from './crm-view'
+import { ICONS } from './icons'
+
 import {
   load,
   save,
@@ -16,6 +18,23 @@ import {
   type Album,
   type Notif,
 } from './store'
+import {
+  ArrowLeft,
+  RotateCcw,
+  Bell,
+  Heart,
+  HeartHandshake,
+  Mail,
+  Moon,
+  Gem,
+  Sun,
+  X,
+  PartyPopper,
+  Link,
+  Building2,
+  LayoutDashboard,
+  UserPlus,
+} from 'lucide-react'
 
 type View = { name: 'home' } | { name: 'album'; albumId: string } | { name: 'crm' }
 
@@ -48,7 +67,7 @@ export default function Page() {
   }, [state])
 
   if (!state) return null
-
+  
   const current = ROLES[role]
   const isSpouse = current.kind === 'spouse'
 
@@ -104,35 +123,41 @@ export default function Page() {
     clearTimeout(toastTimer.current)
     toastTimer.current = setTimeout(() => setToast(null), 3000)
   }
-
+  const RoleIcon = ICONS[current.icon]
   return (
     <div className={`mm ${theme === 'light' ? 'light' : ''}`}>
       <header className="topbar">
         <div className="brand" onClick={() => setView({ name: 'home' })}>
-          <span className="ring">💍</span> Marrymap
+          <span className="ring">
+            <Gem size={18} strokeWidth={2} />
+          </span>
+          Marrymap
         </div>
         <nav className="nav-tabs">
-          <button
-            className={`nav-tab ${view.name !== 'crm' ? 'active' : ''}`}
-            onClick={() => setView({ name: 'home' })}
-          >
-            💒 Dashboard
-          </button>
+        <button
+          className={`nav-tab ${view.name !== 'crm' ? 'active' : ''}`}
+          onClick={() => setView({ name: 'home' })}
+        >
+          <LayoutDashboard size={16} />
+          <span>Dashboard</span>
+        </button>
           <button
             className={`nav-tab ${view.name === 'crm' ? 'active' : ''}`}
             onClick={() => setView({ name: 'crm' })}
           >
-            📇 Vendor CRM
+            <Building2 size={16} />
+            <span>Vendor CRM</span>
           </button>
         </nav>
         <div className="topbar-right">
           {isSpouse && view.name !== 'crm' && (
             <>
-              <button className="invite-btn" onClick={invite}>
-                + Invite guest
-              </button>
+            <button className="invite-btn" onClick={invite}>
+              <UserPlus size={16} />
+              <span>Invite Guest</span>
+            </button>
               <button className="admin-btn bell" onClick={openNotifs} title="Notifications">
-                🔔
+                <Bell size={18} />
                 {unread > 0 && <span className="badge">{unread}</span>}
               </button>
             </>
@@ -143,20 +168,21 @@ export default function Page() {
               onClick={() => applyTheme('light')}
               title="Light mode"
             >
-              ☀️
+             <Sun size={16} />
             </button>
             <button
               className={`seg ${theme === 'dark' ? 'active' : ''}`}
               onClick={() => applyTheme('dark')}
               title="Dark mode"
             >
-              🌙
+            <Moon size={16} />
             </button>
           </div>
           <div className="roles">
             <span className="roles-label">Viewing as</span>
             <span className="role-chip active">
-              <span>{current.emoji}</span> {current.label}
+              <RoleIcon size={16} />
+              {current.label}
             </span>
           </div>
         </div>
@@ -200,7 +226,10 @@ export default function Page() {
 
       {toast && (
         <div className="mm-toast" role="status">
-          <span className="mm-toast-title">🔗 Invite link copied</span>
+          <span className="mm-toast-title">
+            <Link size={16} />
+            <span>Invite link copied</span>
+          </span>
           <span className="mm-toast-url">{toast}</span>
         </div>
       )}
@@ -219,9 +248,9 @@ export default function Page() {
           setState(load())
           setView({ name: 'home' })
         }}
-        title="Reset demo data"
       >
-        ↺ reset
+        <RotateCcw size={16} />
+        <span>Reset</span>
       </button>
     </div>
   )
@@ -251,7 +280,12 @@ function Home({
           const s = stats(a.id)
           return (
             <button key={a.id} className="album-card" onClick={() => onOpen(a.id)}>
-              <div className="album-emoji">{a.emoji}</div>
+                <div className="album-emoji">
+                  {(() => {
+                    const Icon = ICONS[a.icon]
+                    return <Icon size={28} />
+                  })()}
+                </div>
               <div className="album-name">{a.name}</div>
               <div className="album-meta">
                 <span>{s.count} options</span>
@@ -319,8 +353,11 @@ function AlbumView({
         <button className="back" onClick={onBack}>
           ← Albums
         </button>
-        <h2>
-          {album.emoji} {album.name}
+        <h2>{(() => {
+            const AlbumIcon = ICONS[album.icon]
+            return <AlbumIcon size={18} />
+          })()}
+          {album.name}
         </h2>
         <button className="suggest-btn" onClick={onSuggest}>
           + Suggest
@@ -387,12 +424,14 @@ function AlbumView({
                           <span className={o.likes.spouseB ? 'on' : ''}>💙 Sam</span>
                         </div>
                         {isTop && (
-                          <button
+                            <button
                             className="contact-btn"
                             onPointerDown={(e) => e.stopPropagation()}
                             onClick={() => onOpenContact(o.id)}
                           >
-                            ✉️ Emails
+                            <Mail size={16} />
+                            <span>Emails</span>
+                          
                             {o.thread && o.thread.length > 0 && (
                               <span className="contact-count">{o.thread.length}</span>
                             )}
@@ -408,12 +447,12 @@ function AlbumView({
 
         {!done && (
           <div className="controls">
-            <button className="ctrl nope" onClick={() => decide(false)}>
-              ✕
-            </button>
+              <button className="ctrl nope" onClick={() => decide(false)}>
+                <X size={28} />
+              </button>   
             {!isSpouse && <span className="guest-note">Guests browse — spouses vote</span>}
             <button className="ctrl like" onClick={() => decide(true)}>
-              ♥
+              <Heart size={28} fill="currentColor" />
             </button>
           </div>
         )}
@@ -471,7 +510,12 @@ function SuggestModal({
   return (
     <Modal onClose={onClose}>
       <h3>
-        Suggest for {album.emoji} {album.name}
+          Suggest for{' '}
+          {(() => {
+            const AlbumIcon = ICONS[album.icon]
+            return <AlbumIcon size={18} />
+          })()}
+          {album.name}
       </h3>
       <p className="modal-sub">
         {isSpouse ? 'Added straight to the album.' : 'Added to the album for the couple to swipe on.'}
@@ -523,7 +567,12 @@ function NotificationsPanel({
         <div className="req-list">
           {notifications.map((n) => (
             <div className="notif" key={n.id}>
-              <span className="notif-emoji">{n.emoji || '🎉'}</span>
+                <span className="notif-icon">
+                  {(() => {
+                    const NotifIcon = ICONS[n.icon || 'gift']
+                    return <NotifIcon size={18} />
+                  })()}
+                </span>
               <div className="notif-info">
                 <strong>{n.text}</strong>
                 <span className="req-sub">{timeAgo(n.createdAt)}</span>
