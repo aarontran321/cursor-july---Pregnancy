@@ -105,13 +105,11 @@ function seed(): State {
     mk('catering', 'Saffron Table', 'Modern Indian, family style', '$78 / head', ['#fa0', '#f50']),
     mk('catering', 'Coastal Spread', 'Seafood + raw bar', '$120 / head', ['#0cf', '#06f']),
 
-    mk('dj', 'DJ Chelo', 'Toronto · 10+ yrs · full sound & lighting', '$2,200', ['#f70', '#b0f'], {
-      imageUrl: '/dj-chelo.jpg',
-    }),
     mk('dj', 'DJ Mercury', 'Open-format, 2 assistants', '$1,800', ['#a0f', '#40f']),
     mk('dj', 'The Vinyl Bros', 'Live band + DJ combo', '$3,200', ['#f0a', '#a04']),
     mk('dj', 'Neon Nights', 'EDM / Top 40 specialist', '$1,400', ['#0ff', '#08f']),
     mk('dj', 'DJ Chelo Santiago', 'Open-format · Latin & throwbacks', '$2,400', ['#f43', '#a11'], {
+      imageUrl: '/dj-chelo.jpg',
       email: 'chelo@chelosantiagosounds.com',
       subject: 'Wedding DJ — quote request',
       thread: [
