@@ -13,6 +13,7 @@ import {
   type VendorCategory,
   type VendorStatus,
 } from './crm/types'
+import { LucideIcon, Phone, Mail, Handshake, FileText } from 'lucide-react'
 
 const money = (n?: number) =>
   n === undefined || Number.isNaN(n)
@@ -23,12 +24,12 @@ const money = (n?: number) =>
         maximumFractionDigits: 0,
       }).format(n)
 
-const COMM_ICONS: Record<CommType, string> = {
-  call: '📞',
-  email: '✉️',
-  meeting: '🤝',
-  note: '📝',
-}
+const COMM_ICONS: Record<CommType, LucideIcon> = {
+  call: Phone,
+  email: Mail,
+  meeting: Handshake,
+  note: FileText,
+};
 
 // Themed CRM, rendered as a tab inside the Marrymap dashboard. Uses the same
 // CSS variables as the rest of the app, so it follows the light/dark toggle.
@@ -232,7 +233,8 @@ function StatusBadge({ status }: { status: VendorStatus }) {
 }
 
 function VendorCard({ vendor, onClick }: { vendor: Vendor; onClick: () => void }) {
-  const last = vendor.log[0]
+  const last = vendor.log[0];
+  const LastIcon = last ? COMM_ICONS[last.type] : null;
   return (
     <button className="crm-card" onClick={onClick}>
       <div className="crm-card-top">
@@ -248,8 +250,9 @@ function VendorCard({ vendor, onClick }: { vendor: Vendor; onClick: () => void }
         <span className="crm-card-amount">{money(vendor.quoteAmount)}</span>
       </div>
       {last && (
-        <div className="crm-card-last">
-          {COMM_ICONS[last.type]} {last.summary}
+        <div className="crm-card-last flex items-center gap-2">
+          <LastIcon size={16} />
+          <span>{last.summary}</span>
         </div>
       )}
     </button>
@@ -317,6 +320,7 @@ function VendorDrawer({
 }) {
   const [logType, setLogType] = useState<CommType>('note')
   const [logSummary, setLogSummary] = useState('')
+  
 
   const submitLog = () => {
     const summary = logSummary.trim()
@@ -424,8 +428,9 @@ function VendorDrawer({
               >
                 {(Object.keys(COMM_LABELS) as CommType[]).map((t) => (
                   <option key={t} value={t}>
-                    {COMM_ICONS[t]} {COMM_LABELS[t]}
+                  {COMM_LABELS[t]}
                   </option>
+
                 ))}
               </select>
               <input
@@ -444,16 +449,25 @@ function VendorDrawer({
               <p className="crm-log-empty">No interactions logged yet.</p>
             ) : (
               <ol className="crm-log">
-                {vendor.log.map((entry) => (
+                {vendor.log.map((entry) => {
+                const EntryIcon = COMM_ICONS[entry.type];
+
+                return (
                   <li key={entry.id} className="crm-log-item">
-                    <span className="crm-log-dot">{COMM_ICONS[entry.type]}</span>
+                    <span className="crm-log-dot">
+                      <EntryIcon size={16} />
+                    </span>
+
                     <div className="crm-log-row">
                       <span className="crm-log-type">{COMM_LABELS[entry.type]}</span>
                       <span className="crm-log-date">{entry.date}</span>
                     </div>
+
                     <p className="crm-log-summary">{entry.summary}</p>
                   </li>
-                ))}
+                );
+              })}
+
               </ol>
             )}
           </section>
