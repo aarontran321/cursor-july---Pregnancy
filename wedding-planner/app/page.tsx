@@ -25,6 +25,7 @@ export default function Page() {
   const [view, setView] = useState<View>({ name: 'home' })
   const [suggestFor, setSuggestFor] = useState<string | null>(null)
   const [showNotifs, setShowNotifs] = useState(false)
+  const [contactId, setContactId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -177,6 +178,7 @@ export default function Page() {
           onLike={setLike}
           onBack={() => setView({ name: 'home' })}
           onSuggest={() => setSuggestFor(view.albumId)}
+          onOpenContact={(id) => setContactId(id)}
         />
       )}
 
@@ -201,6 +203,13 @@ export default function Page() {
           <span className="mm-toast-title">🔗 Invite link copied</span>
           <span className="mm-toast-url">{toast}</span>
         </div>
+      )}
+
+      {contactId && (
+        <ContactDrawer
+          option={state.options.find((o) => o.id === contactId)!}
+          onClose={() => setContactId(null)}
+        />
       )}
 
       <button
@@ -263,6 +272,7 @@ function AlbumView({
   onLike,
   onBack,
   onSuggest,
+  onOpenContact,
 }: {
   album: Album
   options: Option[]
@@ -270,6 +280,7 @@ function AlbumView({
   onLike: (id: string, liked: boolean) => void
   onBack: () => void
   onSuggest: () => void
+  onOpenContact: (id: string) => void
 }) {
   const [idx, setIdx] = useState(0)
   const [drag, setDrag] = useState({ x: 0, dragging: false, startX: 0 })
@@ -370,9 +381,23 @@ function AlbumView({
                     <div className="card-body">
                       <h3>{o.title}</h3>
                       <p>{o.subtitle}</p>
-                      <div className="likers">
-                        <span className={o.likes.spouseA ? 'on' : ''}>💛 Alex</span>
-                        <span className={o.likes.spouseB ? 'on' : ''}>💙 Sam</span>
+                      <div className="card-foot">
+                        <div className="likers">
+                          <span className={o.likes.spouseA ? 'on' : ''}>💛 Alex</span>
+                          <span className={o.likes.spouseB ? 'on' : ''}>💙 Sam</span>
+                        </div>
+                        {isTop && (
+                          <button
+                            className="contact-btn"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={() => onOpenContact(o.id)}
+                          >
+                            ✉️ Emails
+                            {o.thread && o.thread.length > 0 && (
+                              <span className="contact-count">{o.thread.length}</span>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </article>
@@ -508,6 +533,62 @@ function NotificationsPanel({
         </div>
       )}
     </Modal>
+  )
+}
+
+function ContactDrawer({ option, onClose }: { option: Option; onClose: () => void }) {
+  const thread = option.thread || []
+  const initials = option.title
+    .replace(/^DJ\s+/, '')
+    .split(' ')
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+  return (
+    <div className="drawer-scrim" onClick={onClose}>
+      <aside className="drawer" onClick={(e) => e.stopPropagation()}>
+        <div className="drawer-head">
+          <div className="drawer-avatar" style={{ backgroundImage: option.gradient }}>
+            {initials}
+          </div>
+          <div className="drawer-id">
+            <strong>{option.title}</strong>
+            <span>{option.email || 'no email on file'}</span>
+          </div>
+          <button className="drawer-close" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+
+        {option.subject && (
+          <div className="drawer-subject">
+            <span className="drawer-subject-label">Subject</span>
+            {option.subject}
+          </div>
+        )}
+
+        <div className="thread">
+          {thread.length === 0 ? (
+            <div className="thread-empty">No emails yet — reach out for a quote.</div>
+          ) : (
+            thread.map((m) => (
+              <div key={m.id} className={'email ' + (m.from === 'spouse' ? 'mine' : 'theirs')}>
+                <div className="email-meta">
+                  <span className="email-sender">{m.sender}</span>
+                  <span className="email-time">{m.time}</span>
+                </div>
+                <div className="email-body">{m.body}</div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="drawer-compose">
+          <input placeholder="Write a reply…" disabled />
+          <button disabled>Send</button>
+        </div>
+      </aside>
+    </div>
   )
 }
 

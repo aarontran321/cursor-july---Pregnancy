@@ -10,6 +10,14 @@ export interface Role {
   emoji: string
 }
 
+export interface EmailMsg {
+  id: string
+  from: 'spouse' | 'vendor'
+  sender: string
+  time: string
+  body: string
+}
+
 export interface Option {
   id: string
   albumId: string
@@ -22,6 +30,9 @@ export interface Option {
   likes: { spouseA: boolean; spouseB: boolean }
   addedBy: RoleId
   createdAt: number
+  email?: string
+  subject?: string
+  thread?: EmailMsg[]
 }
 
 export interface Album {
@@ -100,8 +111,58 @@ function seed(): State {
     mk('dj', 'DJ Mercury', 'Open-format, 2 assistants', '$1,800', ['#a0f', '#40f']),
     mk('dj', 'The Vinyl Bros', 'Live band + DJ combo', '$3,200', ['#f0a', '#a04']),
     mk('dj', 'Neon Nights', 'EDM / Top 40 specialist', '$1,400', ['#0ff', '#08f']),
+    mk('dj', 'DJ Chelo Santiago', 'Open-format · Latin & throwbacks', '$2,400', ['#f43', '#a11'], {
+      email: 'chelo@chelosantiagosounds.com',
+      subject: 'Wedding DJ — quote request',
+      thread: [
+        {
+          id: uid(),
+          from: 'spouse',
+          sender: 'Alex',
+          time: 'Jul 14, 9:12 AM',
+          body: "Hi Chelo! We're Alex & Sam — getting married this fall and we loved your set at the Reyes wedding. Are you available our date, and roughly what would a quote look like?",
+        },
+        {
+          id: uid(),
+          from: 'vendor',
+          sender: 'Chelo Santiago',
+          time: 'Jul 14, 4:38 PM',
+          body: "Hi Alex & Sam — congratulations! 🎉 I'd love to be part of your day. To put together an accurate quote, could you share a few details: your date, venue, guest count, how many hours of coverage you need, and the vibe you're going for?",
+        },
+        {
+          id: uid(),
+          from: 'spouse',
+          sender: 'Sam',
+          time: 'Jul 15, 8:02 AM',
+          body: "Of course! Here's everything:\n• Date: Saturday, September 19, 2026\n• Venue: The Glasshouse Botanical Garden, Portland OR\n• Guests: about 140\n• Reception: 6:00–11:00 PM (5 hours)\n• Vibe: open-format — a little salsa & bachata for our families, plus 90s/2000s throwbacks and current Top 40.",
+        },
+        {
+          id: uid(),
+          from: 'vendor',
+          sender: 'Chelo Santiago',
+          time: 'Jul 15, 1:15 PM',
+          body: "Perfect, that helps a lot. For 5 hours at The Glasshouse with ~140 guests, my package is $2,400 — premium sound, dance-floor lighting, a wireless mic for toasts, and an online planner to build your must-play / do-not-play lists. Two quick questions: do you also need ceremony audio, and about what time is the grand entrance?",
+        },
+        {
+          id: uid(),
+          from: 'spouse',
+          sender: 'Alex',
+          time: 'Jul 15, 6:47 PM',
+          body: "Love it. Yes to ceremony audio — short and outdoors, around 4:00 PM — and the grand entrance will be about 6:30. What do you need to lock in the date?",
+        },
+        {
+          id: uid(),
+          from: 'vendor',
+          sender: 'Chelo Santiago',
+          time: 'Jul 16, 10:05 AM',
+          body: "Great choices. Ceremony audio is a simple $250 add-on. To hold September 19 I just need a signed agreement and a 25% deposit ($660). I'll send the contract over today — can't wait to throw a great party for you both!",
+        },
+      ],
+    }),
 
-    mk('photographer', 'Luma Studio', 'Editorial, film + digital', '$4,500', ['#fd0', '#f80']),
+    mk('photographer', 'Luma Studio', 'Editorial, film + digital', '$4,500', ['#fd0', '#f80'], {
+      likes: { spouseA: true, spouseB: true }, // a match out of the gate
+    }),
     mk('photographer', 'Rowan Fields', 'Candid documentary style', '$3,100', ['#7c5', '#293']),
     mk('photographer', 'Amara Lens', 'Bright & airy, drone add-on', '$2,900', ['#fbc', '#f69']),
 
@@ -112,8 +173,6 @@ function seed(): State {
     mk('cake', 'Sugar & Salt', 'Naked cake, 4 tiers', '$650', ['#fda', '#f97']),
   ]
 
-  // make one photographer a match out of the gate
-  options[6].likes = { spouseA: true, spouseB: true }
   // a guest idea is auto-accepted straight into the album for the couple to swipe
   options.push(
     mk('dj', 'Sunset Soundsystem', 'Added by Aunt Rosa', '$2,000', ['#f70', '#f07'], {
