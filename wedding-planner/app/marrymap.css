@@ -43,6 +43,11 @@
 }
 .mm .admin-btn:hover { border-color: var(--pink); }
 .mm .admin-btn.bell { font-size: 16px; padding: 8px 14px; }
+.mm .navlink {
+  background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+  border-radius: 999px; padding: 8px 16px; font-weight: 600; text-decoration: none;
+}
+.mm .navlink:hover { border-color: var(--pink); }
 .mm .invite-btn {
   background: var(--pink); color: #fff; border: none; border-radius: 999px;
   padding: 8px 16px; font-weight: 700; cursor: pointer;
@@ -215,4 +220,27 @@
   border: 1px solid var(--line); color: var(--muted); border-radius: 999px;
   padding: 6px 12px; font-size: 12px; cursor: pointer; z-index: 30;
 }
+
+/* ---------- light mode ---------- */
+.mm.light {
+  --bg: #f6f6fb;
+  --panel: #ffffff;
+  --panel-2: #eef0f6;
+  --line: #e2e4ee;
+  --text: #1b1b26;
+  --muted: #6b6b7b;
+  background: radial-gradient(1200px 600px at 70% -10%, #ffe9f1, var(--bg));
+}
+.mm.light .topbar {
+  background: linear-gradient(var(--bg), rgba(246, 246, 251, 0.7) 70%, transparent);
+}
+.mm.light .role-chip.active { color: #fff; }
+.mm.light .card { box-shadow: 0 20px 50px rgba(60, 60, 90, 0.18); }
+/* modals, toast, inputs — descendants of the .mm root, so they follow the theme */
+.mm.light .mm-overlay .modal,
+.mm.light .mm-toast { background: var(--panel); border-color: var(--line); color: var(--text); }
+.mm.light .mm-toast-title { color: var(--text); }
+.mm.light .mm-overlay .modal input,
+.mm.light .mm-overlay .notif { background: var(--panel-2); border-color: var(--line); color: var(--text); }
+.mm.light .mm-overlay .ghost { color: var(--text); border-color: var(--line); }
 .mm .reset:hover { color: var(--text); }

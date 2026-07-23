@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import './marrymap.css'
 import {
@@ -25,10 +26,21 @@ export default function Page() {
   const [suggestFor, setSuggestFor] = useState<string | null>(null)
   const [showNotifs, setShowNotifs] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   // load on mount only (avoids SSR localStorage + hydration mismatch)
-  useEffect(() => setState(load()), [])
+  useEffect(() => {
+    setState(load())
+    setTheme((localStorage.getItem('marrymap:theme') as 'dark' | 'light') || 'dark')
+  }, [])
+
+  const toggleTheme = () =>
+    setTheme((t) => {
+      const next = t === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('marrymap:theme', next)
+      return next
+    })
   useEffect(() => {
     if (state) save(state)
   }, [state])
@@ -92,7 +104,7 @@ export default function Page() {
   }
 
   return (
-    <div className="mm">
+    <div className={`mm ${theme === 'light' ? 'light' : ''}`}>
       <header className="topbar">
         <div className="brand" onClick={() => setView({ name: 'home' })}>
           <span className="ring">💍</span> Marrymap
@@ -109,6 +121,16 @@ export default function Page() {
               </button>
             </>
           )}
+          <Link href="/crm" className="navlink">
+            Vendor CRM →
+          </Link>
+          <button
+            className="admin-btn"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
           <div className="roles">
             <span className="roles-label">Viewing as</span>
             <span className="role-chip active">
