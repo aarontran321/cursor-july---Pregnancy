@@ -20,7 +20,7 @@
 
 .mm * { box-sizing: border-box; }
 
-.mm .app { max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
+.mm .app, .mm .home, .mm .album-view { max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
 
 /* ---------- top bar ---------- */
 .mm .topbar {
@@ -70,22 +70,29 @@
 .mm .role-chip.active { background: var(--text); color: #14141c; border-color: var(--text); }
 
 /* ---------- home ---------- */
-.mm .home-head h1 { font-size: 32px; margin: 18px 0 4px; letter-spacing: -.03em; }
-.mm .home-head p { color: var(--muted); margin: 0 0 24px; }
+.mm .home-head h1 { font-size: 30px; font-weight: 800; margin: 4px 0 6px; letter-spacing: -.02em; }
+.mm .home-head p { color: var(--muted); margin: 0 0 26px; font-size: 14px; }
 
 .mm .grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
 }
 .mm .album-card {
   text-align: left; background: var(--panel); border: 1px solid var(--line);
-  border-radius: 18px; padding: 22px; cursor: pointer; color: var(--text);
-  transition: transform .15s, border-color .15s; min-height: 150px;
-  display: flex; flex-direction: column; gap: 10px;
+  border-radius: 16px; padding: 20px; cursor: pointer; color: var(--text);
+  transition: transform .15s, border-color .15s, box-shadow .15s; min-height: 168px;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.mm .album-card:hover { transform: translateY(-3px); border-color: var(--pink); }
-.mm .album-emoji { font-size: 40px; }
-.mm .album-name { font-size: 19px; font-weight: 700; }
-.mm .album-meta { margin-top: auto; display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
+.mm .album-card:hover { transform: translateY(-2px); border-color: var(--pink); box-shadow: 0 12px 30px rgba(0,0,0,.18); }
+.mm .album-emoji {
+  font-size: 28px; width: 52px; height: 52px; display: grid; place-items: center;
+  background: var(--panel-2); border-radius: 14px;
+}
+.mm .album-name { font-size: 18px; font-weight: 700; }
+.mm .album-meta {
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
+  display: flex; gap: 8px; align-items: center; justify-content: space-between;
+  color: var(--muted); font-size: 13px; flex-wrap: wrap;
+}
 .mm .match-pill { background: rgba(255,92,138,.15); color: var(--pink-2); border-radius: 999px; padding: 3px 9px; font-weight: 600; }
 
 /* ---------- album / deck ---------- */
@@ -244,3 +251,223 @@
 .mm.light .mm-overlay .notif { background: var(--panel-2); border-color: var(--line); color: var(--text); }
 .mm.light .mm-overlay .ghost { color: var(--text); border-color: var(--line); }
 .mm .reset:hover { color: var(--text); }
+
+/* ---------- nav tabs ---------- */
+.mm .nav-tabs {
+  display: flex; gap: 4px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px;
+}
+.mm .nav-tab {
+  background: none; border: none; color: var(--muted); font-weight: 600;
+  font-size: 14px; padding: 7px 16px; border-radius: 999px; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+}
+.mm .nav-tab:hover { color: var(--text); }
+.mm .nav-tab.active { background: var(--pink); color: #fff; }
+
+/* ---------- theme switch (shows both) ---------- */
+.mm .theme-switch {
+  display: inline-flex; gap: 2px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px;
+}
+.mm .theme-switch .seg {
+  background: none; border: none; cursor: pointer; font-size: 14px; line-height: 1;
+  padding: 6px 10px; border-radius: 999px; opacity: .45; filter: grayscale(.6);
+  transition: opacity .15s ease, background .15s ease;
+}
+.mm .theme-switch .seg:hover { opacity: .8; }
+.mm .theme-switch .seg.active {
+  background: var(--panel-2); opacity: 1; filter: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+}
+
+/* ---------- vendor CRM (themed tab) ---------- */
+.mm .crm { padding-top: 4px; }
+.mm .crm-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 26px;
+}
+.mm .crm-head h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.mm .crm-sub { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.mm .crm-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.mm .crm-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px;
+}
+.mm .crm-stat {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px;
+}
+.mm .crm-stat-label {
+  text-transform: uppercase; letter-spacing: .04em; font-size: 11px; font-weight: 600; color: var(--muted);
+}
+.mm .crm-stat-value { margin-top: 6px; font-size: 24px; font-weight: 700; }
+.mm .crm-stat-value.good { color: var(--green); }
+.mm .crm-stat-value.warn { color: var(--gold); }
+
+.mm .crm-budget {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+  padding: 18px; margin-bottom: 22px;
+}
+.mm .crm-budget-head {
+  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; font-size: 14px;
+}
+.mm .crm-budget-head span:first-child { font-weight: 600; }
+.mm .crm-budget-head .over { color: var(--pink); font-weight: 700; }
+.mm .crm-bar { height: 10px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
+.mm .crm-bar-fill { height: 100%; background: var(--green); border-radius: 999px; transition: width .3s ease; }
+.mm .crm-bar-fill.over { background: var(--pink); }
+.mm .crm-over-note { margin: 8px 0 0; font-size: 12px; color: var(--pink); }
+
+.mm .crm-filters {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 18px;
+}
+.mm .crm-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.mm .crm-pill {
+  background: var(--panel); color: var(--muted); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit;
+}
+.mm .crm-pill:hover { color: var(--text); }
+.mm .crm-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.mm .crm-count { margin-left: 6px; opacity: .6; }
+.mm .crm-viewtoggle { display: inline-flex; background: var(--panel-2); border-radius: 999px; padding: 3px; }
+.mm .crm-viewbtn {
+  background: none; border: none; color: var(--muted); font-size: 13px; font-weight: 600;
+  padding: 6px 14px; border-radius: 999px; cursor: pointer; font-family: inherit;
+}
+.mm .crm-viewbtn.active { background: var(--panel); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, .15); }
+
+.mm .crm-empty {
+  border: 1px dashed var(--line); border-radius: 16px; padding: 48px;
+  text-align: center; color: var(--muted); font-size: 14px;
+}
+
+.mm .crm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.mm .crm-card {
+  display: flex; flex-direction: column; text-align: left; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 16px; padding: 18px; cursor: pointer; color: var(--text);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; font-family: inherit;
+}
+.mm .crm-card:hover { transform: translateY(-2px); border-color: var(--pink); box-shadow: 0 12px 30px rgba(0, 0, 0, .18); }
+.mm .crm-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.mm .crm-card-cat {
+  text-transform: uppercase; letter-spacing: .04em; font-size: 11px; font-weight: 700; color: var(--pink);
+}
+.mm .crm-card-name { margin-top: 2px; font-size: 17px; font-weight: 700; }
+.mm .crm-card-contact { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.mm .crm-card-quote {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--muted);
+}
+.mm .crm-card-amount { font-weight: 700; color: var(--text); }
+.mm .crm-card-last {
+  margin-top: 10px; font-size: 12px; color: var(--muted);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* status badges — translucent accents that read on both themes */
+.mm .crm-badge {
+  display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 10px;
+  font-size: 12px; font-weight: 600; white-space: nowrap; font-family: inherit;
+}
+.mm .crm-badge.lead { background: rgba(154, 154, 174, .16); color: var(--muted); }
+.mm .crm-badge.contacted { background: rgba(92, 141, 255, .16); color: #5c8dff; }
+.mm .crm-badge.quoted { background: rgba(255, 207, 92, .18); color: #cf9a1f; }
+.mm .crm-badge.booked { background: rgba(55, 214, 122, .16); color: #1fa85c; }
+.mm .crm-badge.declined { background: rgba(255, 92, 138, .16); color: #ef4d7f; }
+
+.mm .crm-table-wrap {
+  overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+}
+.mm .crm-table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 14px; }
+.mm .crm-table thead th {
+  text-align: left; text-transform: uppercase; letter-spacing: .04em; font-size: 11px;
+  font-weight: 600; color: var(--muted); padding: 14px 16px; border-bottom: 1px solid var(--line);
+}
+.mm .crm-table th.right, .mm .crm-table td.right { text-align: right; }
+.mm .crm-table tbody tr { border-bottom: 1px solid var(--line); cursor: pointer; }
+.mm .crm-table tbody tr:last-child { border-bottom: none; }
+.mm .crm-table tbody tr:hover { background: var(--panel-2); }
+.mm .crm-table td { padding: 13px 16px; }
+.mm .crm-table td.strong { font-weight: 600; }
+.mm .crm-table td.muted { color: var(--muted); }
+.mm .crm-td-sub { font-size: 12px; color: var(--muted); opacity: .8; }
+.mm .crm-table .dim { opacity: .4; }
+
+/* drawer */
+.mm .crm-drawer-overlay {
+  position: fixed; inset: 0; z-index: 50; display: flex; justify-content: flex-end;
+  background: rgba(0, 0, 0, .45); backdrop-filter: blur(3px);
+}
+.mm .crm-drawer {
+  position: relative; width: 440px; max-width: 100%; height: 100%; overflow-y: auto;
+  background: var(--panel); border-left: 1px solid var(--line);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, .3); animation: crm-slide .25s ease;
+}
+@keyframes crm-slide { from { transform: translateX(30px); opacity: .6; } to { transform: none; opacity: 1; } }
+.mm .crm-drawer-head {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; padding: 20px 22px; border-bottom: 1px solid var(--line); background: var(--panel);
+}
+.mm .crm-drawer-head h2 { margin: 3px 0 0; font-size: 20px; font-weight: 800; }
+.mm .crm-close {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
+  border-radius: 999px; width: 30px; height: 30px; cursor: pointer; flex: 0 0 auto;
+}
+.mm .crm-close:hover { color: var(--text); }
+.mm .crm-drawer-body { padding: 20px 22px 32px; display: flex; flex-direction: column; gap: 22px; }
+.mm .crm-section-label {
+  text-transform: uppercase; letter-spacing: .04em; font-size: 11px; font-weight: 700;
+  color: var(--muted); margin-bottom: 10px;
+}
+.mm .crm-fields { display: flex; flex-direction: column; gap: 12px; }
+.mm .crm-field span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+.mm .crm-input {
+  width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; color: var(--text); font-size: 14px; outline: none; font-family: inherit;
+}
+.mm .crm-input:focus { border-color: var(--pink); }
+.mm .crm-textarea { resize: vertical; }
+.mm .crm-num { position: relative; }
+.mm .crm-num-prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
+.mm .crm-num-input { padding-left: 24px; }
+.mm .crm-status-pipe { display: flex; flex-wrap: wrap; gap: 6px; }
+.mm .crm-status-pipe .crm-badge { border: 1px solid transparent; cursor: pointer; }
+.mm .crm-status-pipe .crm-badge.off { background: transparent; color: var(--muted); border-color: var(--line); }
+.mm .crm-status-pipe .crm-badge.off:hover { color: var(--text); }
+.mm .crm-log-add { display: flex; gap: 8px; margin-bottom: 14px; }
+.mm .crm-log-add .crm-input { flex: 1; }
+.mm .crm-log-add .crm-select { flex: 0 0 auto; width: auto; }
+.mm .crm-log-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 16px 0; }
+.mm .crm-log {
+  list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.mm .crm-log-item { position: relative; }
+.mm .crm-log-dot {
+  position: absolute; left: -25px; top: 0; width: 16px; height: 16px; border-radius: 999px;
+  background: var(--panel); border: 2px solid var(--pink); display: grid; place-items: center; font-size: 8px;
+}
+.mm .crm-log-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.mm .crm-log-type { font-size: 12px; font-weight: 600; }
+.mm .crm-log-date { font-size: 11px; color: var(--muted); }
+.mm .crm-log-summary { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+.mm .crm-delete {
+  width: 100%; background: none; border: 1px solid rgba(255, 92, 138, .4); color: var(--pink);
+  border-radius: 10px; padding: 10px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.mm .crm-delete:hover { background: rgba(255, 92, 138, .1); }
+
+/* let the Add-vendor modal's select match its inputs */
+.mm-overlay .modal select {
+  width: 100%; background: #0b0b0f; border: 1px solid #2a2a3a; border-radius: 10px;
+  padding: 11px 13px; color: #f3f3f7; font-size: 14px; outline: none; font-family: inherit;
+}
+.mm.light .mm-overlay .modal select { background: var(--panel-2); border-color: var(--line); color: var(--text); }
+
+@media (max-width: 900px) { .mm .crm-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 760px) { .mm .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) { .mm .crm-stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .mm .crm-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .mm .grid { grid-template-columns: 1fr; } }

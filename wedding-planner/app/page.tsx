@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import './marrymap.css'
+import CrmView from './crm-view'
 import {
   load,
   save,
@@ -17,7 +17,7 @@ import {
   type Notif,
 } from './store'
 
-type View = { name: 'home' } | { name: 'album'; albumId: string }
+type View = { name: 'home' } | { name: 'album'; albumId: string } | { name: 'crm' }
 
 export default function Page() {
   const [state, setState] = useState<State | null>(null)
@@ -29,18 +29,19 @@ export default function Page() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
-  // load on mount only (avoids SSR localStorage + hydration mismatch)
+  // load on mount only (avoids SSR localStorage + hydration mismatch). This is
+  // the sanctioned post-mount hydration exception to set-state-in-effect.
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     setState(load())
     setTheme((localStorage.getItem('marrymap:theme') as 'dark' | 'light') || 'dark')
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [])
 
-  const toggleTheme = () =>
-    setTheme((t) => {
-      const next = t === 'dark' ? 'light' : 'dark'
-      localStorage.setItem('marrymap:theme', next)
-      return next
-    })
+  const applyTheme = (next: 'dark' | 'light') => {
+    localStorage.setItem('marrymap:theme', next)
+    setTheme(next)
+  }
   useEffect(() => {
     if (state) save(state)
   }, [state])
@@ -109,8 +110,22 @@ export default function Page() {
         <div className="brand" onClick={() => setView({ name: 'home' })}>
           <span className="ring">💍</span> Marrymap
         </div>
+        <nav className="nav-tabs">
+          <button
+            className={`nav-tab ${view.name !== 'crm' ? 'active' : ''}`}
+            onClick={() => setView({ name: 'home' })}
+          >
+            💒 Dashboard
+          </button>
+          <button
+            className={`nav-tab ${view.name === 'crm' ? 'active' : ''}`}
+            onClick={() => setView({ name: 'crm' })}
+          >
+            📇 Vendor CRM
+          </button>
+        </nav>
         <div className="topbar-right">
-          {isSpouse && (
+          {isSpouse && view.name !== 'crm' && (
             <>
               <button className="invite-btn" onClick={invite}>
                 + Invite guest
@@ -121,16 +136,22 @@ export default function Page() {
               </button>
             </>
           )}
-          <Link href="/crm" className="navlink">
-            Vendor CRM →
-          </Link>
-          <button
-            className="admin-btn"
-            onClick={toggleTheme}
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
+          <div className="theme-switch" role="group" aria-label="Theme">
+            <button
+              className={`seg ${theme === 'light' ? 'active' : ''}`}
+              onClick={() => applyTheme('light')}
+              title="Light mode"
+            >
+              ☀️
+            </button>
+            <button
+              className={`seg ${theme === 'dark' ? 'active' : ''}`}
+              onClick={() => applyTheme('dark')}
+              title="Dark mode"
+            >
+              🌙
+            </button>
+          </div>
           <div className="roles">
             <span className="roles-label">Viewing as</span>
             <span className="role-chip active">
@@ -140,7 +161,9 @@ export default function Page() {
         </div>
       </header>
 
-      {view.name === 'home' ? (
+      {view.name === 'crm' ? (
+        <CrmView />
+      ) : view.name === 'home' ? (
         <Home
           albums={state.albums}
           options={state.options}
